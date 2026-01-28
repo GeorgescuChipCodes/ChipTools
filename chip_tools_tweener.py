@@ -54,3 +54,59 @@ def tween(percentage, obj = None, Attrs = None, selection = True):
         current_value = previous_value + weighted_difference
 
         cmds.setKeyframe(attr_full, time = current_time, value = current_value)
+        cmds.refresh(force=True)
+
+class tween_window(object) :
+    
+    def __init__(self):
+        self.window_name = "Tweener"
+        
+    def show(self):
+        
+        if cmds.window(self.window_name, query = True, exists = True):
+            cmds.deleteUI(self.window_name)
+
+
+        cmds.window(self.window_name, sizeable = True)
+        
+
+        self.build_ui()
+
+
+        cmds.showWindow()
+        cmds.window(self.window_name, edit=True, widthHeight=(600, 100))
+
+
+    def build_ui(self):
+        
+
+        column = cmds.columnLayout(adjustableColumn=True)
+        cmds.text(label="Use the slider to set the tween amount")
+
+        row = cmds.rowLayout(numberOfColumns = 2)
+
+        self.slider = cmds.floatSlider(width = 398, min = 0, max = 100, value = 50, step = 1, changeCommand = tween)
+
+        reset_button = cmds.button(label = "Reset", command = self.reset, width = 198)
+
+        cmds.setParent('..')  # leave rowLayout
+
+        cmds.rowLayout(numberOfColumns=3)
+
+        one_quarter_button = cmds.button(label = "Favor Left", command = lambda *args: tween(25), width = 198)
+        half_button = cmds.button(label = "Middle", command = lambda *args: tween(50), width = 198)
+        three_quarters_button = cmds.button(label = "Favor Right", command = lambda *args: tween(75), width = 198)
+
+        cmds.setParent(column)
+
+        cmds.button(label = "Close", command = self.close)
+
+
+        
+
+    def reset(self, *args):
+        cmds.floatSlider(self.slider, edit = True, value = 50)
+
+        
+    def close(self, *args):
+        cmds.deleteUI(self.window_name)
