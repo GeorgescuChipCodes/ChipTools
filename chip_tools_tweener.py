@@ -110,3 +110,5 @@ class tween_window(object) :
         
     def close(self, *args):
         cmds.deleteUI(self.window_name)
+
+tween_window().show()
