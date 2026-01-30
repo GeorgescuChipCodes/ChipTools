@@ -54,7 +54,8 @@ def tween(percentage, obj = None, Attrs = None, selection = True):
         current_value = previous_value + weighted_difference
 
         cmds.setKeyframe(attr_full, time = current_time, value = current_value)
-        cmds.refresh(force=True)
+    cmds.currentTime(current_time, edit=True)
+    cmds.refresh(force=True)
 
 class tween_window(object) :
     
@@ -79,6 +80,8 @@ class tween_window(object) :
 
     def build_ui(self):
         
+        def button(name, value):
+            cmds.button(label = name, command = lambda *args: tween(value), width = 119)
 
         column = cmds.columnLayout(adjustableColumn=True)
         cmds.text(label="Use the slider to set the tween amount")
@@ -91,11 +94,13 @@ class tween_window(object) :
 
         cmds.setParent('..')  # leave rowLayout
 
-        cmds.rowLayout(numberOfColumns=3)
+        cmds.rowLayout(numberOfColumns=5)
 
-        one_quarter_button = cmds.button(label = "Favor Left", command = lambda *args: tween(25), width = 198)
-        half_button = cmds.button(label = "Middle", command = lambda *args: tween(50), width = 198)
-        three_quarters_button = cmds.button(label = "Favor Right", command = lambda *args: tween(75), width = 198)
+        sudo_favour_left_button = button("<<", 25)
+        favor_left_button = button("<", 33)
+        half_button = button("|", 50)
+        favor_rightbutton = button(">", 66)
+        sudo_favor_rightbutton = button(">>", 75)
 
         cmds.setParent(column)
 
